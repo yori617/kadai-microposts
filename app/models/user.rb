@@ -7,4 +7,24 @@ class User < ApplicationRecord
     has_secure_password
     
     has_many :microposts
+    #自分がフォローしてるUserへの参照
+    has_many :relationships
+    has_many :followings, through: :relationships, source: :follow
+    #自分をフォローしているUserへの参照
+    has_many :reverses_of_relationship, class_name: 'Relationship', foreign_key: 'follow_id'
+    has_many :followers, through: :reverses_of_relationship, source: :user
+    
+    def follow(other_user)
+        unless self == other_user#フォロしようとしている他ユーザが自分自身ではないか
+            self.relationships.find_or_create_by(follow_id: other_user.id)
+        end
+    end
+    def unfollow(other_user)
+        relationship = self.relationships.find_by(follow_id: other_user.id)
+        relationship.destroy if relationship#上で見つけたフォローがあれば（relationship）destroy
+    end
+    def following?(other_user)
+        self.followings.include?(other_user)
+        #フォローしているUserを取得し、otheruserが含まれていたらtrue,いなければfalse
+    end
 end
