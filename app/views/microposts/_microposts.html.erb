@@ -1,5 +1,3 @@
-pp/views/microposts/_microposts.html.erb
-
 <ul class="list-unstyled">
   <% microposts.each do |micropost| %>
     <li class="media mb-3">
@@ -9,12 +7,13 @@ pp/views/microposts/_microposts.html.erb
           <%= link_to micropost.user.name, user_path(micropost.user) %> <span class="text-muted">posted at <%= micropost.created_at %></span>
         </div>
         <div>
-          <p class="mb-0"><%= micropost.content %></p>
+          <p><%= micropost.content %></p>
         </div>
-        <div>
+        <div class="row">
           <% if current_user == micropost.user %>
-            <%= link_to "Delete", micropost, method: :delete, data: { confirm: "You sure?" }, class: 'btn btn-danger btn-sm' %>
+            <%= link_to "Delete", micropost, method: :delete, data: { confirm: "You sure?" }, class: "btn btn-danger btn-sm" %>
           <% end %>
+            <%= render "favorites/favorite_button", micropost: micropost %>
         </div>
       </div>
     </li>
